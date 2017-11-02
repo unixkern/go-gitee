@@ -1,55 +1,60 @@
-// Copyright 2015 The go-github AUTHORS. All rights reserved.
+// Copyright 2015 The go-gitee AUTHORS. All rights reserved.
 //
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// The basicauth command demonstrates using the github.BasicAuthTransport,
+// The basicauth command demonstrates using the gitee.BasicAuthTransport,
 // including handling two-factor authentication. This won't currently work for
 // accounts that use SMS to receive one-time passwords.
 package main
 
 import (
-	"bufio"
+	// "bufio"
 	"context"
 	"fmt"
-	"os"
-	"strings"
-	"syscall"
+	// "os"
+	// "strings"
+	// "syscall"
+	"golang.org/x/oauth2"
 
-	"github.com/google/go-github/github"
-	"golang.org/x/crypto/ssh/terminal"
+	"go-gitee/gitee"
 )
 
 func main() {
-	r := bufio.NewReader(os.Stdin)
-	fmt.Print("GitHub Username: ")
-	username, _ := r.ReadString('\n')
+	// r := bufio.NewReader(os.Stdin)
+	// fmt.Print("Gitee Username: ")
+	// username, _ := r.ReadString('\n')
 
-	fmt.Print("GitHub Password: ")
-	bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
-	password := string(bytePassword)
+	// fmt.Print("Gitee Password: ")
+	// // bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
 
-	tp := github.BasicAuthTransport{
-		Username: strings.TrimSpace(username),
-		Password: strings.TrimSpace(password),
-	}
+	// password ,_ := r.ReadString('\n')
 
-	client := github.NewClient(tp.Client())
 	ctx := context.Background()
-	user, _, err := client.Users.Get(ctx, "")
-
-	// Is this a two-factor auth error? If so, prompt for OTP and try again.
-	if _, ok := err.(*github.TwoFactorAuthError); ok {
-		fmt.Print("\nGitHub OTP: ")
-		otp, _ := r.ReadString('\n')
-		tp.OTP = strings.TrimSpace(otp)
-		user, _, err = client.Users.Get(ctx, "")
+	conf := &oauth2.Config{
+	    ClientID:     "47e10a732882363062588a4cb26e0eea80eb4e3d32f60ce8193f7f96e467abac",
+	    ClientSecret: "228f59e9306d14b95de611db8ffcb39524a9c6e499dc1c09eed1652a63781d57",
+	    Scopes:       []string{"user_info", "projects"},
+	    Endpoint: oauth2.Endpoint{
+	        AuthURL:  "https://gitee.com/oauth/auth",
+	        TokenURL: "https://gitee.com/oauth/token",
+	    },
 	}
+	token,err := conf.PasswordCredentialsToken(ctx,"noreply@daiheimao.top","1qaz2wsx")
+
+	tp := gitee.OAuthTransport{
+		Token: token,
+	}
+
+	client := gitee.NewClient(tp.Client())
+	
+	user, _, err := client.Users.Get(ctx, "")
 
 	if err != nil {
 		fmt.Printf("\nerror: %v\n", err)
 		return
 	}
 
-	fmt.Printf("\n%v\n", github.Stringify(user))
+	fmt.Printf("\n%v\n", gitee.Stringify(user))
+	fmt.Printf("\n%v\n", *user.Login)
 }

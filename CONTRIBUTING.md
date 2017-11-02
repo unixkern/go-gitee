@@ -43,9 +43,9 @@ again.
      exercised by your tests.
 
   1. Please run:
-     * `go generate github.com/google/go-github/...`
-     * `go test github.com/google/go-github/...`
-     * `go vet github.com/google/go-github/...`
+     * `go generate github.com/weilaihui/go-gitee/...`
+     * `go test github.com/weilaihui/go-gitee/...`
+     * `go vet github.com/weilaihui/go-gitee/...`
 
   1. Do your best to have [well-formed commit messages][] for each change.
      This provides consistency throughout the project, and ensures that commit
@@ -67,7 +67,7 @@ again.
 
 Currently, everything is defined in the main `github` package, with API methods
 broken into separate service objects. These services map directly to how
-the [GitHub API documentation][] is organized, so use that as your guide for
+the [Gitee API documentation][] is organized, so use that as your guide for
 where to put new methods.
 
 Code is organized in files also based pretty closely on the GitHub API
@@ -75,7 +75,7 @@ documentation, following the format `{service}_{api}.go`. For example, methods
 defined at <https://developer.github.com/v3/repos/hooks/> live in
 [repos_hooks.go][].
 
-[GitHub API documentation]: https://developer.github.com/v3/
+[Gitee API documentation]: https://gitee.com/api/v5/swagger
 [repos_hooks.go]: https://github.com/google/go-github/blob/master/github/repos_hooks.go
 
 
