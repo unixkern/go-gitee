@@ -13,7 +13,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/weilaihui/go-gitee/gitee"
+	"go-gitee/gitee"
 )
 
 func TestUsers_Get(t *testing.T) {
@@ -189,9 +189,9 @@ func TestUsers_Keys(t *testing.T) {
 	}
 
 	// Add new key
-	_, _, err = client.Users.CreateKey(context.Background(), &github.Key{
-		Title: github.String("go-github test key"),
-		Key:   github.String(key),
+	_, _, err = client.Users.CreateKey(context.Background(), &gitee.Key{
+		Title: gitee.String("go-gitee test key"),
+		Key:   gitee.String(key),
 	})
 	if err != nil {
 		t.Fatalf("Users.CreateKey() returned error: %v", err)

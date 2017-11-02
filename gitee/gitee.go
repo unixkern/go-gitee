@@ -29,7 +29,7 @@ import (
 
 const (
 	libraryVersion = "1"
-	defaultBaseURL = "http://gitee.com/api/v5/"
+	defaultBaseURL = "https://gitee.com/api/v5/"
 	uploadBaseURL  = "https://uploads.gitee.com/"
 	userAgent      = "go-gitee/" + libraryVersion
 
@@ -38,7 +38,7 @@ const (
 	headerRateReset     = "X-RateLimit-Reset"
 	headerOTP           = "X-GitHub-OTP"
 
-	mediaTypeV3                = "application/vnd.gitee.v5+json"
+	mediaTypeV3                = "application/json, text/plain, */*"
 	defaultMediaType           = "application/octet-stream"
 	mediaTypeV3SHA             = "application/vnd.gitee.v5.sha"
 	mediaTypeV3Diff            = "application/vnd.gitee.v5.diff"
@@ -319,6 +319,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	if c.UserAgent != "" {
 		req.Header.Set("User-Agent", c.UserAgent)
 	}
+
 	return req, nil
 }
 
@@ -940,9 +941,34 @@ type OAuthTransport struct {
 func (t *OAuthTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req = cloneRequest(req) // per RoundTrip contract
 
-	q := req.URL.Query()
-	q.Set("access_token", t.Token.AccessToken)
-	req.URL.RawQuery = q.Encode()
+	switch {
+	case req.Method == "POST":
+		q := req.URL.Query()
+		q.Set("access_token", t.Token.AccessToken)
+		req.URL.RawQuery = q.Encode()
+		
+		var body map[string]string
+		data, err := ioutil.ReadAll(req.Body)
+		if err == nil && data != nil {
+			json.Unmarshal(data, &body)
+
+			body["access_token"] = t.Token.AccessToken
+
+			var buf io.ReadWriter
+			buf = new(bytes.Buffer)
+			enc := json.NewEncoder(buf)
+			enc.SetEscapeHTML(false)
+			enc.Encode(body)
+			
+			req.Body = ioutil.NopCloser(buf)
+
+		}
+
+	default:
+		q := req.URL.Query()
+		q.Set("access_token", t.Token.AccessToken)
+		req.URL.RawQuery = q.Encode()
+	}
 
 	return t.transport().RoundTrip(req)
 }

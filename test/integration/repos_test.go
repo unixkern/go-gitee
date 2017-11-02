@@ -13,7 +13,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/weilaihui/go-gitee/gitee"
+	"go-gitee/gitee"
 )
 
 func TestRepositories_CRUD(t *testing.T) {
@@ -33,7 +33,7 @@ func TestRepositories_CRUD(t *testing.T) {
 	}
 
 	// update the repository description
-	repo.Description = github.String("description")
+	repo.Description = gitee.String("description")
 	repo.DefaultBranch = nil // FIXME: this shouldn't be necessary
 	_, _, err = client.Repositories.Edit(context.Background(), *repo.Owner.Login, *repo.Name, repo)
 	if err != nil {
@@ -58,28 +58,28 @@ func TestRepositories_CRUD(t *testing.T) {
 
 func TestRepositories_BranchesTags(t *testing.T) {
 	// branches
-	branches, _, err := client.Repositories.ListBranches(context.Background(), "git", "git", nil)
+	branches, _, err := client.Repositories.ListBranches(context.Background(), "simon", "go-gitee", nil)
 	if err != nil {
 		t.Fatalf("Repositories.ListBranches() returned error: %v", err)
 	}
 
 	if len(branches) == 0 {
-		t.Fatalf("Repositories.ListBranches('git', 'git') returned no branches")
+		t.Fatalf("Repositories.ListBranches('simon', 'go-gitee') returned no branches")
 	}
 
-	_, _, err = client.Repositories.GetBranch(context.Background(), "git", "git", *branches[0].Name)
+	_, _, err = client.Repositories.GetBranch(context.Background(), "simon", "go-gitee", *branches[0].Name)
 	if err != nil {
 		t.Fatalf("Repositories.GetBranch() returned error: %v", err)
 	}
 
 	// tags
-	tags, _, err := client.Repositories.ListTags(context.Background(), "git", "git", nil)
+	tags, _, err := client.Repositories.ListTags(context.Background(), "simon", "go-gitee", nil)
 	if err != nil {
 		t.Fatalf("Repositories.ListTags() returned error: %v", err)
 	}
 
 	if len(tags) == 0 {
-		t.Fatalf("Repositories.ListTags('git', 'git') returned no tags")
+		t.Fatalf("Repositories.ListTags('simon', 'git') returned no tags")
 	}
 }
 
@@ -111,13 +111,13 @@ func TestRepositories_EditBranches(t *testing.T) {
 	// TODO: This test fails with 422 Validation Failed [{Resource: Field: Code: Message:}].
 	//       Someone familiar with protection requests needs to come up with
 	//       a valid protection request that doesn't give 422 error.
-	protectionRequest := &github.ProtectionRequest{
-		RequiredStatusChecks: &github.RequiredStatusChecks{
+	protectionRequest := &gitee.ProtectionRequest{
+		RequiredStatusChecks: &gitee.RequiredStatusChecks{
 			Strict:   true,
 			Contexts: []string{"continuous-integration"},
 		},
-		RequiredPullRequestReviews: &github.PullRequestReviewsEnforcementRequest{
-			DismissalRestrictionsRequest: &github.DismissalRestrictionsRequest{
+		RequiredPullRequestReviews: &gitee.PullRequestReviewsEnforcementRequest{
+			DismissalRestrictionsRequest: &gitee.DismissalRestrictionsRequest{
 				Users: []string{},
 				Teams: []string{},
 			},
@@ -135,23 +135,7 @@ func TestRepositories_EditBranches(t *testing.T) {
 		t.Fatalf("Repositories.UpdateBranchProtection() returned error: %v", err)
 	}
 
-	want := &github.Protection{
-		RequiredStatusChecks: &github.RequiredStatusChecks{
-			Strict:   true,
-			Contexts: []string{"continuous-integration"},
-		},
-		RequiredPullRequestReviews: &github.PullRequestReviewsEnforcement{
-			DismissalRestrictions: github.DismissalRestrictions{
-				Users: []*gitee.User{},
-				Teams: []*gitee.Team{},
-			},
-			DismissStaleReviews: true,
-		},
-		EnforceAdmins: &github.AdminEnforcement{
-			Enabled: true,
-		},
-		Restrictions: nil,
-	}
+	want := true
 	if !reflect.DeepEqual(protection, want) {
 		t.Errorf("Repositories.UpdateBranchProtection() returned %+v, want %+v", protection, want)
 	}
@@ -177,7 +161,7 @@ func TestRepositories_List(t *testing.T) {
 		t.Fatalf("Repositories.List('google') returned error: %v", err)
 	}
 
-	opt := github.RepositoryListOptions{Sort: "created"}
+	opt := gitee.RepositoryListOptions{Sort: "created"}
 	repos, _, err := client.Repositories.List(context.Background(), "google", &opt)
 	if err != nil {
 		t.Fatalf("Repositories.List('google') with Sort opt returned error: %v", err)

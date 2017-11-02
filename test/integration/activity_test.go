@@ -10,13 +10,11 @@ package integration
 import (
 	"context"
 	"testing"
-
-	"github.com/weilaihui/go-gitee/gitee"
 )
 
 const (
-	owner = "weilaihui"
-	repo  = "go-gitee"
+	owner = "limeng32"
+	repo  = "flying-demo"
 )
 
 func TestActivity_Starring(t *testing.T) {
@@ -86,25 +84,24 @@ func deleteSubscription(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Activity.GetRepositorySubscription returned error: %v", err)
 	}
-	if sub != nil {
+	if sub {
 		t.Fatalf("Still watching %v/%v after deleting subscription.", owner, repo)
 	}
 }
 
 func createSubscription(t *testing.T) {
 	// watch the target repository
-	sub := &gitee.Subscription{Subscribed: gitee.Bool(true)}
-	_, _, err := client.Activity.SetRepositorySubscription(context.Background(), owner, repo, sub)
+	_, _, err := client.Activity.SetRepositorySubscription(context.Background(), owner, repo)
 	if err != nil {
 		t.Fatalf("Activity.SetRepositorySubscription returned error: %v", err)
 	}
 
 	// check again and verify watching
-	sub, _, err = client.Activity.GetRepositorySubscription(context.Background(), owner, repo)
+	subed, _, err := client.Activity.GetRepositorySubscription(context.Background(), owner, repo)
 	if err != nil {
 		t.Fatalf("Activity.GetRepositorySubscription returned error: %v", err)
 	}
-	if sub == nil || !*sub.Subscribed {
+	if !subed {
 		t.Fatalf("Not watching %v/%v after setting subscription.", owner, repo)
 	}
 }
@@ -125,17 +122,24 @@ func TestActivity_Watching(t *testing.T) {
 	}
 
 	// first, check if already watching the target repository
-	sub, _, err := client.Activity.GetRepositorySubscription(context.Background(), owner, repo)
+	subed, _ , err := client.Activity.GetRepositorySubscription(context.Background(), owner, repo)
 	if err != nil {
 		t.Fatalf("Activity.GetRepositorySubscription returned error: %v", err)
 	}
 
-	switch {
-	case sub != nil: // If already subscribing, delete then recreate subscription.
+	if subed {
 		deleteSubscription(t)
 		createSubscription(t)
-	case sub == nil: // Otherwise, create subscription and then delete it.
+	} else {
 		createSubscription(t)
 		deleteSubscription(t)
 	}
+	// switch {
+	// case subed: // If already subscribing, delete then recreate subscription.
+	// 	deleteSubscription(t)
+	// 	createSubscription(t)
+	// case !subed: // Otherwise, create subscription and then delete it.
+	// 	createSubscription(t)
+	// 	deleteSubscription(t)
+	// }
 }
