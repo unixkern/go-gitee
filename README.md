@@ -7,36 +7,6 @@ go-gitee requires Go version 1.7 or greater.
 
 ## Usage ##
 
-```go
-import "github.com/weilaihui/go-gitee/gitee"
-```
-
-Construct a new Gitee client, then use the various services on the client to
-access different parts of the Gitee API. For example:
-
-```go
-client := gitee.NewClient(nil)
-
-// list all organizations for user "willnorris"
-orgs, _, err := client.Organizations.List(ctx, "willnorris", nil)
-```
-
-Some API methods have optional parameters that can be passed. For example:
-
-```go
-client := gitee.NewClient(nil)
-
-// list public repositories for org "github"
-opt := &gitee.RepositoryListByOrgOptions{Type: "public"}
-repos, _, err := client.Repositories.ListByOrg(ctx, "github", opt)
-```
-
-The services of a client divide the API into logical chunks and correspond to
-the structure of the Gitee API documentation at
-https://gitee.com/api/v5/swagger.
-
-### Authentication ###
-
 The go-gitee library does not directly handle authentication. Instead, when
 creating a new client, pass an `http.Client` that can handle authentication for
 you. The easiest and recommended way to do this is using the [oauth2][]
@@ -46,49 +16,40 @@ API token][]), you can use it with the oauth2 library using:
 
 ```go
 import "golang.org/x/oauth2"
+import "github.com/weilaihui/go-gitee/gitee"
 
-func main() {
-	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: "... your access token ..."},
-	)
-	tc := oauth2.NewClient(ctx, ts)
 
-	client := gitee.NewClient(tc)
-
-	// list all repositories for the authenticated user
-	repos, _, err := client.Repositories.List(ctx, "", nil)
+ctx := context.Background()
+conf := &oauth2.Config{
+    ClientID:     "{ClientID}",
+    ClientSecret: "{ClientSecret}",
+    Scopes:       "{Scopes}",
+    Endpoint: oauth2.Endpoint{
+        AuthURL:  "https://gitee.com/oauth/auth",
+        TokenURL: "https://gitee.com/oauth/token",
+    },
 }
+token,err := conf.PasswordCredentialsToken(ctx,"{username}","{password}")
+
+tp := gitee.OAuthTransport{
+	Token: token,
+}
+
+client := gitee.NewClient(tp.Client())
+
+user, _, err := client.Users.Get(ctx, "")
+if err != nil {
+	fmt.Printf("\nerror: %v\n", err)
+	return
+}
+
+fmt.Printf("\n%v\n", gitee.Stringify(user))
+fmt.Printf("\n%v\n", *user.Login)
 ```
 
-Note that when using an authenticated Client, all calls made by the client will
-include the specified OAuth token. Therefore, authenticated clients should
-almost never be shared between different users.
-
-See the [oauth2 docs][] for complete instructions on using that library.
-
-For API methods that require HTTP Basic Authentication, use the
-[`BasicAuthTransport`](https://godoc.org/github.com/google/go-github/github#BasicAuthTransport).
-
-GitHub Apps authentication can be provided by the [ghinstallation](https://github.com/bradleyfalzon/ghinstallation)
-package.
-
-```go
-import "github.com/bradleyfalzon/ghinstallation"
-
-func main() {
-	// Wrap the shared transport for use with the integration ID 1 authenticating with installation ID 99.
-	itr, err := ghinstallation.NewKeyFromFile(http.DefaultTransport, 1, 99, "2016-10-19.private-key.pem")
-	if err != nil {
-		// Handle error.
-	}
-
-	// Use installation transport with client.
-	client := gitee.NewClient(&http.Client{Transport: itr})
-
-	// Use client...
-}
-```
+The services of a client divide the API into logical chunks and correspond to
+the structure of the Gitee API documentation at
+https://gitee.com/api/v5/swagger.
 
 ### Accepted Status ###
 

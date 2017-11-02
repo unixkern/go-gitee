@@ -25,12 +25,12 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/google/go-github/github"
+	"github.com/weilaihui/go-gitee/gitee"
 	"golang.org/x/oauth2"
 )
 
 var (
-	client *github.Client
+	client *gitee.Client
 
 	// auth indicates whether tests are being run with an OAuth token.
 	// Tests can use this flag to skip certain tests when run without auth.
@@ -45,12 +45,12 @@ func main() {
 	token := os.Getenv("GITHUB_AUTH_TOKEN")
 	if token == "" {
 		print("!!! No OAuth token. Some tests won't run. !!!\n\n")
-		client = github.NewClient(nil)
+		client = gitee.NewClient(nil)
 	} else {
 		tc := oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: token},
 		))
-		client = github.NewClient(tc)
+		client = gitee.NewClient(tc)
 		auth = true
 	}
 
@@ -58,14 +58,14 @@ func main() {
 		url string
 		typ interface{}
 	}{
-		//{"rate_limit", &github.RateLimits{}},
-		{"users/octocat", &github.User{}},
-		{"user", &github.User{}},
-		{"users/willnorris/keys", &[]github.Key{}},
-		{"orgs/google-test", &github.Organization{}},
-		{"repos/google/go-github", &github.Repository{}},
-		{"repos/google/go-github/issues/1", &github.Issue{}},
-		{"/gists/9257657", &github.Gist{}},
+		//{"rate_limit", &gitee.RateLimits{}},
+		{"users/octocat", &gitee.User{}},
+		{"user", &gitee.User{}},
+		{"users/willnorris/keys", &[]gitee.Key{}},
+		{"orgs/google-test", &gitee.Organization{}},
+		{"repos/google/go-gitee", &gitee.Repository{}},
+		{"repos/google/go-gitee/issues/1", &gitee.Issue{}},
+		{"/gists/9257657", &gitee.Gist{}},
 	} {
 		err := testType(tt.url, tt.typ)
 		if err != nil {

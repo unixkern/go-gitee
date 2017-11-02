@@ -21,14 +21,6 @@ import (
 )
 
 func main() {
-	// r := bufio.NewReader(os.Stdin)
-	// fmt.Print("Gitee Username: ")
-	// username, _ := r.ReadString('\n')
-
-	// fmt.Print("Gitee Password: ")
-	// // bytePassword, _ := terminal.ReadPassword(int(syscall.Stdin))
-
-	// password ,_ := r.ReadString('\n')
 
 	ctx := context.Background()
 	conf := &oauth2.Config{
