@@ -42,7 +42,7 @@ var (
 func main() {
 	flag.Parse()
 
-	token := os.Getenv("GITHUB_AUTH_TOKEN")
+	token := os.Getenv("GITEE_AUTH_TOKEN")
 	if token == "" {
 		print("!!! No OAuth token. Some tests won't run. !!!\n\n")
 		client = gitee.NewClient(nil)

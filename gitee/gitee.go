@@ -145,7 +145,7 @@ type Client struct {
 
 	// Admin          *AdminService
 	// Apps           *AppsService
-	// Authorizations *AuthorizationsService
+	Authorizations *AuthorizationsService
 	
 	
 	// Gitignores     *GitignoresService
@@ -237,7 +237,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Issues = (*IssuesService)(&c.common)
 	// c.Admin = (*AdminService)(&c.common)
 	// c.Apps = (*AppsService)(&c.common)
-	// c.Authorizations = (*AuthorizationsService)(&c.common)
+	c.Authorizations = (*AuthorizationsService)(&c.common)
 	// c.Gitignores = (*GitignoresService)(&c.common)
 	// c.Licenses = (*LicensesService)(&c.common)
 	// c.Migrations = (*MigrationService)(&c.common)

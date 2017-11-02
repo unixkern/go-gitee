@@ -29,7 +29,7 @@ be run using a dedicated test account.
 
 Run tests using:
 
-    GITHUB_AUTH_TOKEN=XXX go test -v -tags=integration ./integration
+    GITEE_AUTH_TOKEN=XXX go test -v -tags=integration ./integration
 
 Additionally there are a set of integration tests for the Authorizations API.
 These tests require a GitHub user (username and password), and also that a
@@ -37,7 +37,7 @@ These tests require a GitHub user (username and password), and also that a
 attendant Client ID and Client Secret) be available. Then, to execute just the
 Authorization tests:
 
-    GITHUB_USERNAME='<GH_USERNAME>' GITHUB_PASSWORD='<GH_PASSWORD>' GITHUB_CLIENT_ID='<CLIENT_ID>' GITHUB_CLIENT_SECRET='<CLIENT_SECRET>' go test -v -tags=integration -run=Authorizations ./integration
+    GITEE_USERNAME='<GH_USERNAME>' GITEE_PASSWORD='<GH_PASSWORD>' GITEE_CLIENT_ID='<CLIENT_ID>' GITEE_CLIENT_SECRET='<CLIENT_SECRET>' go test -v -tags=integration -run=Authorizations ./integration
 
 If some or all of these environment variables are not available, certain of the
 Authorization integration tests will be skipped.
@@ -59,4 +59,4 @@ really should).
 
 Run the fields tool using:
 
-    GITHUB_AUTH_TOKEN=XXX go run ./fields/fields.go
+    GITEE_AUTH_TOKEN=XXX go run ./fields/fields.go

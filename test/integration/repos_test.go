@@ -13,7 +13,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/google/go-github/github"
+	"github.com/weilaihui/go-gitee/gitee"
 )
 
 func TestRepositories_CRUD(t *testing.T) {
@@ -142,8 +142,8 @@ func TestRepositories_EditBranches(t *testing.T) {
 		},
 		RequiredPullRequestReviews: &github.PullRequestReviewsEnforcement{
 			DismissalRestrictions: github.DismissalRestrictions{
-				Users: []*github.User{},
-				Teams: []*github.Team{},
+				Users: []*gitee.User{},
+				Teams: []*gitee.Team{},
 			},
 			DismissStaleReviews: true,
 		},

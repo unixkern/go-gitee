@@ -14,12 +14,12 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/google/go-github/github"
+	"github.com/weilaihui/go-gitee/gitee"
 	"golang.org/x/oauth2"
 )
 
 var (
-	client *github.Client
+	client *gitee.Client
 
 	// auth indicates whether tests are being run with an OAuth token.
 	// Tests can use this flag to skip certain tests when run without auth.
@@ -27,7 +27,7 @@ var (
 )
 
 func init() {
-	token := os.Getenv("GITHUB_AUTH_TOKEN")
+	token := os.Getenv("GITEE_AUTH_TOKEN")
 	if token == "" {
 		print("!!! No OAuth token. Some tests won't run. !!!\n\n")
 		client = github.NewClient(nil)
@@ -40,7 +40,7 @@ func init() {
 	}
 
 	// Environment variables required for Authorization integration tests
-	vars := []string{envKeyGitHubUsername, envKeyGitHubPassword, envKeyClientID, envKeyClientSecret}
+	vars := []string{envKeyGiteeUsername, envKeyGiteePassword, envKeyClientID, envKeyClientSecret}
 
 	for _, v := range vars {
 		value := os.Getenv(v)
@@ -58,7 +58,7 @@ func checkAuth(name string) bool {
 	return auth
 }
 
-func createRandomTestRepository(owner string, autoinit bool) (*github.Repository, error) {
+func createRandomTestRepository(owner string, autoinit bool) (*gitee.Repository, error) {
 	// create random repo name that does not currently exist
 	var repoName string
 	for {

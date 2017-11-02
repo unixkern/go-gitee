@@ -121,7 +121,7 @@ For complete usage of go-gitee, see the full [package docs][].
 [oauth2]: https://github.com/golang/oauth2
 [oauth2 docs]: https://godoc.org/golang.org/x/oauth2
 [personal API token]: https://github.com/blog/1509-personal-api-tokens
-[package docs]: https://godoc.org/github.com/google/go-github/github
+[package docs]: https://godoc.org/github.com/weilaihui/go-gitee/gitee
 [GraphQL API v4]: https://developer.github.com/v4/
 [shurcooL/githubql]: https://github.com/shurcooL/githubql
 

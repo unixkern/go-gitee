@@ -8,7 +8,7 @@ package gitee provides a client for using the GitHub API.
 
 Usage:
 
-	import "github.com/google/go-github/github"
+	import "github.com/weilaihui/go-gitee/gitee"
 
 Construct a new GitHub client, then use the various services on the client to
 access different parts of the GitHub API. For example:

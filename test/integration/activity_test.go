@@ -1,4 +1,4 @@
-// Copyright 2014 The go-github AUTHORS. All rights reserved.
+// Copyright 2014 The go-gitee AUTHORS. All rights reserved.
 //
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -11,12 +11,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/google/go-github/github"
+	"github.com/weilaihui/go-gitee/gitee"
 )
 
 const (
-	owner = "google"
-	repo  = "go-github"
+	owner = "weilaihui"
+	repo  = "go-gitee"
 )
 
 func TestActivity_Starring(t *testing.T) {
@@ -93,7 +93,7 @@ func deleteSubscription(t *testing.T) {
 
 func createSubscription(t *testing.T) {
 	// watch the target repository
-	sub := &github.Subscription{Subscribed: github.Bool(true)}
+	sub := &gitee.Subscription{Subscribed: gitee.Bool(true)}
 	_, _, err := client.Activity.SetRepositorySubscription(context.Background(), owner, repo, sub)
 	if err != nil {
 		t.Fatalf("Activity.SetRepositorySubscription returned error: %v", err)

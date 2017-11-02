@@ -40,7 +40,7 @@ func main() {
 
 	client := gitee.NewClient(tp.Client())
 	
-	user, _, err := client.Users.Get(ctx, "")
+	user, _, err := client.Activity.ListStargazers(ctx, "")
 
 	if err != nil {
 		fmt.Printf("\nerror: %v\n", err)
