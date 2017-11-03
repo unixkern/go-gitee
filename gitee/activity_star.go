@@ -13,13 +13,26 @@ import (
 // StarredRepository is returned by ListStarred.
 type StarredRepository struct {
 	StarredAt  *Timestamp  `json:"starred_at,omitempty"`
-	Repository *Repository `json:"repo,omitempty"`
+	Repository
 }
 
 // Stargazer represents a user that has starred a repository.
 type Stargazer struct {
-	StarredAt *Timestamp `json:"starred_at,omitempty"`
-	User      *User      `json:"user,omitempty"`
+	AvatarUrl      			*string      `json:"avatar_url,omitempty"`
+	EventsUrl      			*string      `json:"events_url,omitempty"`
+	FollowersUrl      		*string      `json:"followers_url,omitempty"`
+	FollowingUrl      		*string      `json:"following_url,omitempty"`
+	GistsUrl      			*string      `json:"gists_url,omitempty"`
+	HtmlUrl      			*string      `json:"html_url,omitempty"`
+	Login      				*string      `json:"login,omitempty"`
+	OrganizationsUrl      	*string      `json:"organizations_url,omitempty"`
+	Received_eventsUrl      *string      `json:"received_events_url,omitempty"`
+	ReposUrl      			*string      `json:"repos_url,omitempty"`
+	SiteAdmin      			*bool        `json:"site_admin,omitempty"`
+	StarredUrl      		*string      `json:"starred_url,omitempty"`
+	SubscriptionsUrl      	*string      `json:"subscriptions_url,omitempty"`
+	Type      				*string      `json:"type,omitempty"`
+	Url      				*string      `json:"url,omitempty"`
 }
 
 // ListStargazers lists people who have starred the specified repo.

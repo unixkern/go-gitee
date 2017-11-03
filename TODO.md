@@ -1,30 +1,26 @@
-- [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported
-- [x] list syntax required (any unordered or ordered list supported)
-- [x] this is a complete item
-- [ ] this is an incomplete item
 
 * 动态通知 Activity
 	* [x] 列出 star 了项目的用户
-	* 列出 watch 了项目的用户
-	* 列出项目的所有动态
-	* 列出一个项目里的通知
+	* [x] 列出 watch 了项目的用户
+	* [x] 列出项目的所有动态
+	* [x] 列出一个项目里的通知
 	* 标记一个项目里的通知为已读
-	* 列出授权用户 star 了的项目
-	* 列出授权用户 watch 了的项目
-	* 检查授权用户是否 star 了一个项目
-	* star 一个项目
-	* 取消 star 一个项目
-	* 检查授权用户是否 watch 了一个项目
-	* watch 一个项目
-	* 取消 watch 一个项目
-	* 列出用户 star 了的项目
-	* 列出用户 watch 了的项目
-	* 列出一个用户收到的动态
-	* 列出一个用户收到的公开动态
-	* 列出用户的动态
-	* 列出用户的公开动态
-	* 列出用户所属组织的动态
-	* 列出组织的公开动态
+	* [x] 列出授权用户 star 了的项目
+	* [x] 列出授权用户 watch 了的项目
+	* [x] 检查授权用户是否 star 了一个项目
+	* [x] star 一个项目
+	* [x] 取消 star 一个项目
+	* [x] 检查授权用户是否 watch 了一个项目
+	* [x] watch 一个项目
+	* [x] 取消 watch 一个项目
+	* [x] 列出用户 star 了的项目
+	* [x] 列出用户 watch 了的项目
+	* [x] 列出一个用户收到的动态
+	* [x] 列出一个用户收到的公开动态
+	* [x] 列出用户的动态
+	* [x] 列出用户的公开动态
+	* [x] 列出用户所属组织的动态
+	* [x] 列出组织的公开动态
 	* 列出授权用户的所有通知
 	* 标记所有通知为已读
 	* 获取一个通知

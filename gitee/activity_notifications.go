@@ -51,7 +51,7 @@ type NotificationListOptions struct {
 //
 // GitHub API docs: https://developer.github.com/v3/activity/notifications/#list-your-notifications
 func (s *ActivityService) ListNotifications(ctx context.Context, opt *NotificationListOptions) ([]*Notification, *Response, error) {
-	u := fmt.Sprintf("notifications")
+	u := fmt.Sprintf("notifications/threads")
 	u, err := addOptions(u, opt)
 	if err != nil {
 		return nil, nil, err
@@ -104,10 +104,8 @@ type markReadOptions struct {
 //
 // GitHub API docs: https://developer.github.com/v3/activity/notifications/#mark-as-read
 func (s *ActivityService) MarkNotificationsRead(ctx context.Context, lastRead time.Time) (*Response, error) {
-	opts := &markReadOptions{
-		LastReadAt: lastRead,
-	}
-	req, err := s.client.NewRequest("PUT", "notifications", opts)
+	u := fmt.Sprintf("notifications/threads")
+	req, err := s.client.NewRequest("PUT", u, nil)
 	if err != nil {
 		return nil, err
 	}

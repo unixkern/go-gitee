@@ -6333,14 +6333,6 @@ func (s *SourceImportAuthor) GetURL() string {
 }
 
 // GetStarredAt returns the StarredAt field if it's non-nil, zero value otherwise.
-func (s *Stargazer) GetStarredAt() Timestamp {
-	if s == nil || s.StarredAt == nil {
-		return Timestamp{}
-	}
-	return *s.StarredAt
-}
-
-// GetStarredAt returns the StarredAt field if it's non-nil, zero value otherwise.
 func (s *StarredRepository) GetStarredAt() Timestamp {
 	if s == nil || s.StarredAt == nil {
 		return Timestamp{}
