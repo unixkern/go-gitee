@@ -76,7 +76,7 @@ type IssueEvent struct {
 //
 // GitHub API docs: https://developer.github.com/v3/issues/events/#list-events-for-an-issue
 func (s *IssuesService) ListIssueEvents(ctx context.Context, owner, repo string, number int, opt *ListOptions) ([]*IssueEvent, *Response, error) {
-	u := fmt.Sprintf("repos/%v/%v/issues/%v/events", owner, repo, number)
+	u := fmt.Sprintf("repos/%v/%v/issues/%v", owner, repo, number)
 	u, err := addOptions(u, opt)
 	if err != nil {
 		return nil, nil, err
@@ -100,7 +100,7 @@ func (s *IssuesService) ListIssueEvents(ctx context.Context, owner, repo string,
 //
 // GitHub API docs: https://developer.github.com/v3/issues/events/#list-events-for-a-repository
 func (s *IssuesService) ListRepositoryEvents(ctx context.Context, owner, repo string, opt *ListOptions) ([]*IssueEvent, *Response, error) {
-	u := fmt.Sprintf("repos/%v/%v/issues/events", owner, repo)
+	u := fmt.Sprintf("repos/%v/%v/issues", owner, repo)
 	u, err := addOptions(u, opt)
 	if err != nil {
 		return nil, nil, err
@@ -124,7 +124,7 @@ func (s *IssuesService) ListRepositoryEvents(ctx context.Context, owner, repo st
 //
 // GitHub API docs: https://developer.github.com/v3/issues/events/#get-a-single-event
 func (s *IssuesService) GetEvent(ctx context.Context, owner, repo string, id int) (*IssueEvent, *Response, error) {
-	u := fmt.Sprintf("repos/%v/%v/issues/events/%v", owner, repo, id)
+	u := fmt.Sprintf("repos/%v/%v/issues/%v", owner, repo, id)
 
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {

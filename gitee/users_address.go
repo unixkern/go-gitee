@@ -8,23 +8,28 @@ package gitee
 import "context"
 
 // UserEmail represents user's email address
-type UserEmail struct {
-	Email 				*string `json:"email,omitempty"`
-	UnconfirmedEmail  	*string  `json:"unconfirmed_email,omitempty"`
+type UserAddress struct {
+	Aame   		*string `json:"name,omitempty"`
+	Tel    		*string `json:"tel,omitempty"`
+	Address    	*string `json:"address,omitempty"`
+	Province    *string `json:"province,omitempty"`
+	City    	*string `json:"city,omitempty"`
+	ZipCode    	*string `json:"zip_code,omitempty"`
+	Comment    	*string `json:"comment,omitempty"`
 }
 
 // ListEmails lists all email addresses for the authenticated user.
 //
 // GitHub API docs: https://developer.github.com/v3/users/emails/#list-email-addresses-for-a-user
-func (s *UsersService) GetEmail(ctx context.Context) (*UserEmail, *Response, error) {
-	u := "user/emails"
+func (s *UsersService) GetAddress(ctx context.Context) (*UserAddress, *Response, error) {
+	u := "user/address"
 
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	uResp := new(UserEmail)
+	uResp := new(UserAddress)
 	resp, err := s.client.Do(ctx, req, uResp)
 	if err != nil {
 		return nil, resp, err
@@ -36,34 +41,18 @@ func (s *UsersService) GetEmail(ctx context.Context) (*UserEmail, *Response, err
 // AddEmails adds email addresses of the authenticated user.
 //
 // GitHub API docs: https://developer.github.com/v3/users/emails/#add-email-addresses
-func (s *UsersService) AddEmail(ctx context.Context, email *UserEmail) (*UserEmail, *Response, error) {
-	u := "user/emails"
-
-	req, err := s.client.NewRequest("POST", u, email)
+func (s *UsersService) EditAddress(ctx context.Context, userAddress *UserAddress) (*User, *Response, error) {
+	u := "user/address"
+	req, err := s.client.NewRequest("PATCH", u, userAddress)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	uResp := new(UserEmail)
+	uResp := new(User)
 	resp, err := s.client.Do(ctx, req, uResp)
 	if err != nil {
 		return nil, resp, err
 	}
 
 	return uResp, resp, nil
-}
-
-// DeleteEmails deletes email addresses from authenticated user.
-//
-// GitHub API docs: https://developer.github.com/v3/users/emails/#delete-email-addresses
-func (s *UsersService) DeleteEmail(ctx context.Context) (bool, *Response, error) {
-	u := "user/unconfirmed_email"
-	req, err := s.client.NewRequest("DELETE", u, nil)
-	if err != nil {
-		return false,nil, err
-	}
-
-	resp, err := s.client.Do(ctx, req, nil)
-	ok, err := parseBoolResponse(err)
-	return ok, resp, err
 }

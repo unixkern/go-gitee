@@ -74,7 +74,7 @@ func init() {
 	conf := &oauth2.Config{
 	    ClientID:     clientID,
 	    ClientSecret: clientSecret,
-	    Scopes:       []string{"user_info", "projects"},
+	    Scopes:       []string{"user_info", "projects", "pull_requests", "issues", "notes", "keys", "hook", "groups", "gists"},
 	    Endpoint: oauth2.Endpoint{
 	        AuthURL:  "https://gitee.com/oauth/auth",
 	        TokenURL: "https://gitee.com/oauth/token",

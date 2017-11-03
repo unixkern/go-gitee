@@ -7124,12 +7124,12 @@ func (u *User) GetID() int {
 	return *u.ID
 }
 
-// GetLocation returns the Location field if it's non-nil, zero value otherwise.
-func (u *User) GetLocation() string {
-	if u == nil || u.Location == nil {
-		return ""
+// GetLocation returns the Address field if it's non-nil, zero value otherwise.
+func (u *User) GetLocation() *UserAddress {
+	if u == nil || u.Address == nil {
+		return nil
 	}
-	return *u.Location
+	return u.Address
 }
 
 // GetLogin returns the Login field if it's non-nil, zero value otherwise.
@@ -7285,19 +7285,11 @@ func (u *UserEmail) GetEmail() string {
 }
 
 // GetPrimary returns the Primary field if it's non-nil, zero value otherwise.
-func (u *UserEmail) GetPrimary() bool {
-	if u == nil || u.Primary == nil {
-		return false
+func (u *UserEmail) GetUnconfirmedEmail() string {
+	if u == nil || u.UnconfirmedEmail == nil {
+		return ""
 	}
-	return *u.Primary
-}
-
-// GetVerified returns the Verified field if it's non-nil, zero value otherwise.
-func (u *UserEmail) GetVerified() bool {
-	if u == nil || u.Verified == nil {
-		return false
-	}
-	return *u.Verified
+	return *u.UnconfirmedEmail
 }
 
 // GetAvatarURL returns the AvatarURL field if it's non-nil, zero value otherwise.

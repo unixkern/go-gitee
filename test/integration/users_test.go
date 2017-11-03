@@ -12,39 +12,10 @@ import (
 	"fmt"
 	"math/rand"
 	"testing"
+	"reflect"
 
 	"go-gitee/gitee"
 )
-
-func TestUsers_Get(t *testing.T) {
-	// list all users
-	users, _, err := client.Users.ListAll(context.Background(), nil)
-	if err != nil {
-		t.Fatalf("Users.ListAll returned error: %v", err)
-	}
-
-	if len(users) == 0 {
-		t.Errorf("Users.ListAll returned no users")
-	}
-
-	// mojombo is user #1
-	if want := "mojombo"; want != *users[0].Login {
-		t.Errorf("user[0].Login was %q, wanted %q", *users[0].Login, want)
-	}
-
-	// get individual user
-	u, _, err := client.Users.Get(context.Background(), "octocat")
-	if err != nil {
-		t.Fatalf("Users.Get('octocat') returned error: %v", err)
-	}
-
-	if want := "octocat"; want != *u.Login {
-		t.Errorf("user.Login was %q, wanted %q", *u.Login, want)
-	}
-	if want := "The Octocat"; want != *u.Name {
-		t.Errorf("user.Name was %q, wanted %q", *u.Name, want)
-	}
-}
 
 func TestUsers_Update(t *testing.T) {
 	if !checkAuth("TestUsers_Get") {
@@ -60,33 +31,33 @@ func TestUsers_Update(t *testing.T) {
 		t.Errorf("wanted non-empty values for user.Login")
 	}
 
-	// save original location
-	var location string
-	if u.Location != nil {
-		location = *u.Location
+	// save original address
+	var address gitee.UserAddress
+	if u.Address != nil {
+		address = *u.Address
 	}
 
-	// update location to test value
-	testLoc := fmt.Sprintf("test-%d", rand.Int())
-	u.Location = &testLoc
+	// update address to test value
+	randAddress := fmt.Sprintf("test-%d", rand.Int())
+	testLoc := gitee.UserAddress{Address : &randAddress}
 
-	_, _, err = client.Users.Edit(context.Background(), u)
+	u, _, err = client.Users.EditAddress(context.Background(), &testLoc)
 	if err != nil {
 		t.Fatalf("Users.Update returned error: %v", err)
 	}
 
-	// refetch user and check location value
+	// refetch user and check address value
 	u, _, err = client.Users.Get(context.Background(), "")
 	if err != nil {
 		t.Fatalf("Users.Get('') returned error: %v", err)
 	}
 
-	if testLoc != *u.Location {
-		t.Errorf("Users.Get('') has location: %v, want: %v", *u.Location, testLoc)
+	if !reflect.DeepEqual(u.Address.Address, testLoc.Address) {
+		t.Errorf("Users.Get('') has address: %v, want: %v", *u.Address, testLoc)
 	}
 
-	// set location back to the original value
-	u.Location = &location
+	// set address back to the original value
+	u.Address = &address
 	_, _, err = client.Users.Edit(context.Background(), u)
 	if err != nil {
 		t.Fatalf("Users.Edit returned error: %v", err)
@@ -98,75 +69,56 @@ func TestUsers_Emails(t *testing.T) {
 		return
 	}
 
-	emails, _, err := client.Users.ListEmails(context.Background(), nil)
+	email, _, err := client.Users.GetEmail(context.Background())
 	if err != nil {
-		t.Fatalf("Users.ListEmails() returned error: %v", err)
+		t.Fatalf("Users.GetEmail() returned error: %v", err)
 	}
 
 	// create random address not currently in user's emails
-	var email string
-EmailLoop:
-	for {
-		email = fmt.Sprintf("test-%d@example.com", rand.Int())
-		for _, e := range emails {
-			if e.Email != nil && *e.Email == email {
-				continue EmailLoop
-			}
-		}
-		break
-	}
+	randEmail := &gitee.UserEmail{ Email : gitee.String(fmt.Sprintf("test-%d@example.com", rand.Int())) }
+		
 
 	// Add new address
-	_, _, err = client.Users.AddEmails(context.Background(), []string{email})
+	_, _, err = client.Users.AddEmail(context.Background(), randEmail)
 	if err != nil {
 		t.Fatalf("Users.AddEmails() returned error: %v", err)
 	}
 
 	// List emails again and verify new email is present
-	emails, _, err = client.Users.ListEmails(context.Background(), nil)
+	email, _, err = client.Users.GetEmail(context.Background())
 	if err != nil {
-		t.Fatalf("Users.ListEmails() returned error: %v", err)
+		t.Fatalf("Users.GetEmail() returned error: %v", err)
 	}
 
-	var found bool
-	for _, e := range emails {
-		if e.Email != nil && *e.Email == email {
-			found = true
-			break
-		}
-	}
-
-	if !found {
-		t.Fatalf("Users.ListEmails() does not contain new address: %v", email)
+	if *email.UnconfirmedEmail != *randEmail.Email {
+		t.Fatalf("Users.GetEmail() does not contain new address: %v", *email.UnconfirmedEmail)
 	}
 
 	// Remove new address
-	_, err = client.Users.DeleteEmails(context.Background(), []string{email})
+	_,_, err = client.Users.DeleteEmail(context.Background())
 	if err != nil {
-		t.Fatalf("Users.DeleteEmails() returned error: %v", err)
+		t.Fatalf("Users.DeleteEmail() returned error: %v", err)
 	}
 
 	// List emails again and verify new email was removed
-	emails, _, err = client.Users.ListEmails(context.Background(), nil)
+	email, _, err = client.Users.GetEmail(context.Background())
 	if err != nil {
-		t.Fatalf("Users.ListEmails() returned error: %v", err)
+		t.Fatalf("Users.GetEmail() returned error: %v", err)
 	}
 
-	for _, e := range emails {
-		if e.Email != nil && *e.Email == email {
-			t.Fatalf("Users.ListEmails() still contains address %v after removing it", email)
-		}
+	if email.UnconfirmedEmail != nil {
+		t.Fatalf("Users.GetEmail() still contains address %v after removing it", *email.UnconfirmedEmail)
 	}
 }
 
 func TestUsers_Keys(t *testing.T) {
-	keys, _, err := client.Users.ListKeys(context.Background(), "willnorris", nil)
+	keys, _, err := client.Users.ListKeys(context.Background(), nil)
 	if err != nil {
-		t.Fatalf("Users.ListKeys('willnorris') returned error: %v", err)
+		t.Fatalf("Users.ListKeys('') returned error: %v", err)
 	}
 
 	if len(keys) == 0 {
-		t.Errorf("Users.ListKeys('willnorris') returned no keys")
+		t.Errorf("Users.ListKeys('') returned no keys")
 	}
 
 	// the rest of the tests requires auth
@@ -175,7 +127,7 @@ func TestUsers_Keys(t *testing.T) {
 	}
 
 	// TODO: make this integration test work for any authenticated user.
-	keys, _, err = client.Users.ListKeys(context.Background(), "", nil)
+	keys, _, err = client.Users.ListKeys(context.Background(), nil)
 	if err != nil {
 		t.Fatalf("Users.ListKeys('') returned error: %v", err)
 	}
@@ -198,7 +150,7 @@ func TestUsers_Keys(t *testing.T) {
 	}
 
 	// List keys again and verify new key is present
-	keys, _, err = client.Users.ListKeys(context.Background(), "", nil)
+	keys, _, err = client.Users.ListKeys(context.Background(), nil)
 	if err != nil {
 		t.Fatalf("Users.ListKeys('') returned error: %v", err)
 	}
@@ -231,7 +183,7 @@ func TestUsers_Keys(t *testing.T) {
 	}
 
 	// List keys again and verify test key was removed
-	keys, _, err = client.Users.ListKeys(context.Background(), "", nil)
+	keys, _, err = client.Users.ListKeys(context.Background(), nil)
 	if err != nil {
 		t.Fatalf("Users.ListKeys('') returned error: %v", err)
 	}

@@ -26,7 +26,6 @@ type User struct {
 	Name              *string    `json:"name,omitempty"`
 	Company           *string    `json:"company,omitempty"`
 	Blog              *string    `json:"blog,omitempty"`
-	Location          *string    `json:"location,omitempty"`
 	Email             *string    `json:"email,omitempty"`
 	Hireable          *bool      `json:"hireable,omitempty"`
 	Bio               *string    `json:"bio,omitempty"`
@@ -46,6 +45,7 @@ type User struct {
 	Collaborators     *int       `json:"collaborators,omitempty"`
 	Plan              *Plan      `json:"plan,omitempty"`
 
+	Address           *UserAddress   `json:"address,omitempty"`
 	// API URLs
 	URL               *string `json:"url,omitempty"`
 	EventsURL         *string `json:"events_url,omitempty"`

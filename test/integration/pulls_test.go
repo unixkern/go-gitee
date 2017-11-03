@@ -13,16 +13,16 @@ import (
 )
 
 func TestPullRequests_ListCommits(t *testing.T) {
-	commits, _, err := client.PullRequests.ListCommits(context.Background(), "google", "go-github", 2, nil)
+	commits, _, err := client.PullRequests.ListCommits(context.Background(), "simon", "go-gitee", 1, nil)
 	if err != nil {
 		t.Fatalf("PullRequests.ListCommits() returned error: %v", err)
 	}
 
-	if got, want := len(commits), 3; got != want {
+	if got, want := len(commits), 1; got != want {
 		t.Fatalf("PullRequests.ListCommits() returned %d commits, want %d", got, want)
 	}
 
-	if got, want := *commits[0].Author.Login, "sqs"; got != want {
+	if got, want := *commits[0].Author.Login, "daiheimaonoreply"; got != want {
 		t.Fatalf("PullRequests.ListCommits()[0].Author.Login returned %v, want %v", got, want)
 	}
 }
